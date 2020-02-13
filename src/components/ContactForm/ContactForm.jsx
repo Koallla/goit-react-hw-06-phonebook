@@ -9,13 +9,32 @@ import 'pnotify/dist/PNotifyBrightTheme.css';
 class ContactForm extends Component {
   static propTypes = {
     addContactInStore: T.func.isRequired,
+    setContactToLocalStorage: T.func.isRequired,
     contacts: T.arrayOf(T.shape({})).isRequired,
+    getDataOfLocalStorage: T.func.isRequired,
   };
 
   state = {
     name: '',
     number: '',
   };
+
+  componentDidMount() {
+    const { getDataOfLocalStorage } = this.props;
+    if (
+      JSON.parse(localStorage.getItem('contacts')) !== null &&
+      JSON.parse(localStorage.getItem('contacts')) !== []
+    ) {
+      getDataOfLocalStorage(JSON.parse(localStorage.getItem('contacts')));
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.props;
+    if (prevState.contacts !== contacts) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+  }
 
   handleChange = e => {
     if (e.target.name === 'number' && Number.isNaN(Number(e.target.value))) {
@@ -62,7 +81,6 @@ class ContactForm extends Component {
         name: this.state.name,
         number: this.state.number,
       };
-
       this.addContact(contact);
 
       this.setState({
@@ -76,10 +94,11 @@ class ContactForm extends Component {
 
   render() {
     const { name, number } = this.state;
-    const { contacts } = this.props;
-    if (contacts.length > 0) {
-      localStorage.setItem('contacts', JSON.stringify(contacts));
+    const { contacts, setContactToLocalStorage } = this.props;
+    if (contacts.length) {
+      setContactToLocalStorage(contacts);
     }
+
     return (
       <>
         <form onSubmit={this.handleSubmit}>

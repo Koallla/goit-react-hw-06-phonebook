@@ -9,14 +9,7 @@ import pop from '../../Transitions/pop.module.css';
 import styles from './app.module.css';
 import '../../Transitions/title.css';
 
-const App = ({ contacts, getDataOfLocalStorage }) => {
-  if (contacts.length < 1) {
-    const savedContacts = JSON.parse(localStorage.getItem('contacts'));
-    if (savedContacts) {
-      getDataOfLocalStorage(savedContacts);
-    }
-  }
-
+const App = ({ contacts }) => {
   return (
     <div className={styles.container}>
       <CSSTransition in classNames="slide" timeout={500} appear>
@@ -25,7 +18,7 @@ const App = ({ contacts, getDataOfLocalStorage }) => {
       <ContactForm />
       <h2>Contacts</h2>
       <TransitionGroup>
-        {contacts && (
+        {contacts.length > 1 && (
           <CSSTransition timeout={250} classNames={pop}>
             <Filter />
           </CSSTransition>
@@ -38,7 +31,6 @@ const App = ({ contacts, getDataOfLocalStorage }) => {
 
 App.propTypes = {
   contacts: T.arrayOf(T.shape({})).isRequired,
-  getDataOfLocalStorage: T.func.isRequired,
 };
 
 export default App;

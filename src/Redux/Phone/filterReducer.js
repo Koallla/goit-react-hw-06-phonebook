@@ -1,13 +1,10 @@
+import { createReducer } from '@reduxjs/toolkit';
 import types from '../types';
 
-const filterReducer = (state = '', { type, payload }) => {
-  switch (type) {
-    case types.FILTER_CONTACT:
-      return payload.value;
+const initial = '';
 
-    default:
-      return state;
-  }
-};
+const filterReducer = createReducer(initial, {
+  [types.FILTER_CONTACT]: (state, action) => action.payload,
+});
 
 export default filterReducer;
