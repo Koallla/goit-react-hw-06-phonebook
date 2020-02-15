@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PNotify from 'pnotify/dist/es/PNotify';
+import throttle from 'lodash.throttle';
 import shortid from 'short-id';
 import T from 'prop-types';
 import { findToMatch } from '../FilterContact/filterContact';
@@ -9,9 +10,11 @@ import 'pnotify/dist/PNotifyBrightTheme.css';
 class ContactForm extends Component {
   static propTypes = {
     addContactInStore: T.func.isRequired,
-    setContactToLocalStorage: T.func.isRequired,
     contacts: T.arrayOf(T.shape({})).isRequired,
     getDataOfLocalStorage: T.func.isRequired,
+    checksContact: T.func.isRequired,
+    messageInputName: T.func.isRequired,
+    alert: T.shape({}).isRequired,
   };
 
   state = {
@@ -21,11 +24,15 @@ class ContactForm extends Component {
 
   componentDidMount() {
     const { getDataOfLocalStorage } = this.props;
-    if (
-      JSON.parse(localStorage.getItem('contacts')) !== null &&
-      JSON.parse(localStorage.getItem('contacts')) !== []
-    ) {
-      getDataOfLocalStorage(JSON.parse(localStorage.getItem('contacts')));
+    try {
+      if (
+        JSON.parse(localStorage.getItem('contacts')) !== null &&
+        JSON.parse(localStorage.getItem('contacts')) !== []
+      ) {
+        getDataOfLocalStorage(JSON.parse(localStorage.getItem('contacts')));
+      }
+    } catch (error) {
+      console.log('error JSON.parse:', error);
     }
   }
 
@@ -37,38 +44,29 @@ class ContactForm extends Component {
   }
 
   handleChange = e => {
-    if (e.target.name === 'number' && Number.isNaN(Number(e.target.value))) {
+    const throttleMessage = throttle(() => {
       PNotify.alert('Input only number');
+    }, 2000);
+
+    if (e.target.name === 'number' && Number.isNaN(Number(e.target.value))) {
+      throttleMessage();
     } else {
       this.setState({ [e.target.name]: e.target.value });
     }
   };
 
   addContact = contact => {
-    const { contacts, addContactInStore } = this.props;
+    const {
+      contacts,
+      checksContact,
+      addContactInStore,
+      messageInputName,
+    } = this.props;
     const findContact = findToMatch(contacts, contact);
     if (contact.name) {
-      // eslint-disable-next-line no-unused-expressions
-      findContact
-        ? PNotify.error({
-            title: 'Recording prohibited!',
-            text: `${findContact.name} is already in contacts`,
-            modules: {
-              Animate: {
-                animate: true,
-                inClass: 'lightSpeedIn',
-                outClass: 'lightSpeedOut',
-              },
-            },
-            addClass: 'notify',
-            animateSpeed: 1000,
-            delay: 5000,
-          })
-        : addContactInStore(contact);
+      checksContact(findContact, contact, addContactInStore);
     } else {
-      PNotify.error({
-        text: "'Input name!'",
-      });
+      messageInputName();
     }
   };
 
@@ -94,10 +92,6 @@ class ContactForm extends Component {
 
   render() {
     const { name, number } = this.state;
-    const { contacts, setContactToLocalStorage } = this.props;
-    if (contacts.length) {
-      setContactToLocalStorage(contacts);
-    }
 
     return (
       <>

@@ -10,12 +10,11 @@
   justify-content: space-between;
   background-color: rgb(192, 192, 192);
   margin: 5px;
-  padding: 10px;
+  padding: 5px;
   vertical-align: top;
-  border: 2px solid rgb(31, 25, 25);
-  border-radius: 10px;
+  border: 2px solid rgb(95, 95, 95);
+  border-radius: 7px;
   text-align: right;
-  overflow-x: hidden;
 }
 
 .text {
@@ -27,6 +26,7 @@
 
 .number {
   text-align: right;
+  overflow-x: hidden;
 }
 
 .btn {
