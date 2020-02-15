@@ -14,7 +14,6 @@ class ContactForm extends Component {
     getDataOfLocalStorage: T.func.isRequired,
     checksContact: T.func.isRequired,
     messageInputName: T.func.isRequired,
-    alert: T.shape({}).isRequired,
   };
 
   state = {
@@ -45,7 +44,7 @@ class ContactForm extends Component {
 
   handleChange = e => {
     const throttleMessage = throttle(() => {
-      PNotify.alert('Input only number');
+      PNotify.error('Input only number');
     }, 2000);
 
     if (e.target.name === 'number' && Number.isNaN(Number(e.target.value))) {
