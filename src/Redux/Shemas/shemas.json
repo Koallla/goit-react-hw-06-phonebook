@@ -1,0 +1,31 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": ["contacts", "filter"],
+  "properties": {
+    "contacts": {
+      "$id": "#/properties/contacts",
+      "type": "object",
+      "title": "The Contacts Schema",
+      "required": ["items"],
+      "properties": {
+        "items": {
+          "$id": "#/properties/contacts/properties/items",
+          "type": "array",
+          "title": "The Items Schema"
+        }
+      }
+    },
+    "filter": {
+      "$id": "#/properties/filter",
+      "type": "string",
+      "title": "The Filter Schema",
+      "default": "",
+      "examples": [""],
+      "pattern": "^(.*)$"
+    }
+  }
+}

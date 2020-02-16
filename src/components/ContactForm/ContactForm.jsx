@@ -34,7 +34,7 @@ class ContactForm extends Component {
     try {
       if (
         JSON.parse(localStorage.getItem('contacts')) !== null &&
-        JSON.parse(localStorage.getItem('contacts')) !== []
+        JSON.parse(localStorage.getItem('contacts')).length > 0
       ) {
         getDataOfLocalStorage(JSON.parse(localStorage.getItem('contacts')));
       }
