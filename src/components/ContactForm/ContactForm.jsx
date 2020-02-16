@@ -7,19 +7,27 @@ import { findToMatch } from '../FilterContact/filterContact';
 import styles from './contactForm.module.css';
 import 'pnotify/dist/PNotifyBrightTheme.css';
 
+const INITIAL_STATE = {
+  name: '',
+  number: '',
+};
+
 class ContactForm extends Component {
   static propTypes = {
     addContactInStore: T.func.isRequired,
-    contacts: T.arrayOf(T.shape({})).isRequired,
+    contacts: T.arrayOf(
+      T.shape({
+        id: T.string.isRequired,
+        name: T.string.isRequired,
+        number: T.string.isRequired,
+      }),
+    ).isRequired,
     getDataOfLocalStorage: T.func.isRequired,
     checksContact: T.func.isRequired,
     messageInputName: T.func.isRequired,
   };
 
-  state = {
-    name: '',
-    number: '',
-  };
+  state = INITIAL_STATE;
 
   componentDidMount() {
     const { getDataOfLocalStorage } = this.props;
@@ -43,14 +51,15 @@ class ContactForm extends Component {
   }
 
   handleChange = e => {
+    const { name, value } = e.target;
     const throttleMessage = throttle(() => {
       PNotify.error('Input only number');
     }, 2000);
 
-    if (e.target.name === 'number' && Number.isNaN(Number(e.target.value))) {
+    if (name === 'number' && Number.isNaN(Number(value))) {
       throttleMessage();
     } else {
-      this.setState({ [e.target.name]: e.target.value });
+      this.setState({ [name]: value });
     }
   };
 
@@ -81,43 +90,39 @@ class ContactForm extends Component {
       this.addContact(contact);
 
       this.setState({
-        name: '',
-        number: '',
+        ...INITIAL_STATE,
       });
-    } else {
-      PNotify.alert('You have not entered a number');
+      return;
     }
+    PNotify.alert('You have not entered a number');
   };
 
   render() {
     const { name, number } = this.state;
-
     return (
-      <>
-        <form onSubmit={this.handleSubmit}>
-          <p className={styles.text_form}>Name</p>
-          <input
-            className={styles.input_form}
-            type="text"
-            name="name"
-            value={name}
-            onChange={this.handleChange}
-            placeholder="Enter contact"
-          />
-          <p className={styles.text_form}>Number</p>
-          <input
-            className={styles.input_form}
-            type="tel"
-            name="number"
-            value={number}
-            onChange={this.handleChange}
-            placeholder="Enter number"
-          />
-          <button className={styles.btn_submit} type="submit">
-            Add contact
-          </button>
-        </form>
-      </>
+      <form onSubmit={this.handleSubmit}>
+        <p className={styles.text_form}>Name</p>
+        <input
+          className={styles.input_form}
+          type="text"
+          name="name"
+          value={name}
+          onChange={this.handleChange}
+          placeholder="Enter contact"
+        />
+        <p className={styles.text_form}>Number</p>
+        <input
+          className={styles.input_form}
+          type="tel"
+          name="number"
+          value={number}
+          onChange={this.handleChange}
+          placeholder="Enter number"
+        />
+        <button className={styles.btn_submit} type="submit">
+          Add contact
+        </button>
+      </form>
     );
   }
 }

@@ -3,7 +3,9 @@ import types from '../types';
 
 const initial = {
   items: [
-    // { id: 'fa0207', name: 'Ola', number: '132' }
+    { id: 'fa0207', name: 'Bill', number: '123' },
+    { id: 'fh0008', name: 'Rob', number: '345' },
+    { id: 'df55f7', name: 'John', number: '678' },
   ],
 };
 

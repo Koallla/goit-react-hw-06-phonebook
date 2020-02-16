@@ -10,22 +10,22 @@ const ContactList = ({ contacts, deleteContactInStore, filterContact }) => {
 
   return (
     <TransitionGroup component="ul" className={styles.list}>
-      {filteredContacts.map(el => (
+      {filteredContacts.map(contact => (
         <CSSTransition
           in
           classNames={slide}
           timeout={250}
           unmountOnExit
           className={styles.item}
-          key={el.id}
+          key={contact.id}
         >
-          <li className={styles.item} key={el.id}>
-            <div className={styles.text}>{el.name}</div>
-            <span className={styles.number}>{el.number}</span>
+          <li className={styles.item} key={contact.id}>
+            <div className={styles.text}>{contact.name}</div>
+            <span className={styles.number}>{contact.number}</span>
             <button
               className={styles.btn}
               type="submit"
-              onClick={() => deleteContactInStore(el.id)}
+              onClick={() => deleteContactInStore(contact.id)}
             ></button>
           </li>
         </CSSTransition>
@@ -35,7 +35,13 @@ const ContactList = ({ contacts, deleteContactInStore, filterContact }) => {
 };
 
 ContactList.propTypes = {
-  contacts: T.arrayOf(T.shape({})).isRequired,
+  contacts: T.arrayOf(
+    T.shape({
+      id: T.string.isRequired,
+      name: T.string.isRequired,
+      number: T.string.isRequired,
+    }),
+  ).isRequired,
   deleteContactInStore: T.func.isRequired,
   filterContact: T.string,
 };
