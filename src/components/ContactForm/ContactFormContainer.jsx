@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import PNotify from 'pnotify/dist/es/PNotify';
 import * as phoneActions from '../../Redux/Phone/phoneActions';
 import ContactForm from './ContactForm';
+import * as phoneSelectors from '../../Redux/Phone/phoneSelectors';
 import 'pnotify/dist/PNotifyBrightTheme.css';
 
 const checksContact = (findContact, contact, addContactInStore) => {
@@ -35,7 +36,7 @@ const setContactToLocalStorage = contacts =>
   localStorage.setItem('contacts', JSON.stringify(contacts));
 
 const mapStateToProps = state => ({
-  contacts: state.contacts.items,
+  contacts: phoneSelectors.getContacts(state),
 });
 
 const mapDispatchToProps = dispatch => ({
